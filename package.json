@@ -1,0 +1,10 @@
+{
+  "name": "webpack-webextension-dev-plugin",
+  "version": "0.1.0",
+  "main": "src/index.js",
+  "license": "MIT",
+  "private": true,
+  "peerDependencies": {
+    "webpack": "^5.0"
+  }
+}
