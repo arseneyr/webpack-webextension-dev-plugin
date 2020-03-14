@@ -1,12 +1,7 @@
 "use strict";
 
-const makeSerializable = require("webpack/lib/util/makeSerializable");
-const NullDependency = require("webpack/lib/dependencies/NullDependency");
-
-/** @typedef {import("webpack-sources").ReplaceSource} ReplaceSource */
-/** @typedef {import("../Dependency")} Dependency */
-/** @typedef {import("../DependencyTemplate").DependencyTemplateContext} DependencyTemplateContext */
-/** @typedef {import("../dependencies/ImportDependenciesBlock")} ImportDependenciesBlock */
+const NullDependency = require("webpack/lib/dependencies/NullDependency"),
+  { SingleEntryPlugin } = require("webpack");
 
 class InjectDependency extends NullDependency {
   constructor(entryName, range) {
@@ -18,21 +13,27 @@ class InjectDependency extends NullDependency {
   get type() {
     return "require.inject()";
   }
+
+  getResourceIdentifier() {
+    return `inject${this.entryName}`;
+  }
 }
 
-InjectDependency.Template = class InjectDependencyTemplate extends NullDependency.Template {
-  /**
-   * @param {Dependency} dependency the dependency for which the template should be applied
-   * @param {ReplaceSource} source the current replace source which can be modified
-   * @param {DependencyTemplateContext} templateContext the context object
-   * @returns {void}
-   */
-  apply(
-    dependency,
-    source,
-    { runtimeTemplate, module, moduleGraph, chunkGraph, runtimeRequirements }
-  ) {
-    debugger;
+InjectDependency.Template = class InjectDependencyTemplate {
+  apply(dependency, source, runtime) {}
+};
+
+InjectDependency.Factory = class InjectDependencyFactory {
+  constructor(compilation) {
+    this.compilation = compilation;
+  }
+  create({ context, dependencies }, callback) {
+    this.compilation.addEntry(
+      context,
+      SingleEntryPlugin.createDependency(dependencies[0].entryName, `injected`),
+      `injected`,
+      err => callback(err)
+    );
   }
 };
 
