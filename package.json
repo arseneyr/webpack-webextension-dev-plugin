@@ -5,6 +5,7 @@
   "license": "MIT",
   "private": true,
   "peerDependencies": {
-    "webpack": "^4.0"
+    "webpack": "^4.0",
+    "html-webpack-plugin": "^3"
   }
 }
